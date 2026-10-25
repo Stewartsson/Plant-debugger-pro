@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: plant-debugger-pro
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash
+      - key: ADK_FALLBACK_POLICY
+        value: "true"
+      - key: VISION_FALLBACK_POLICY
+        value: "true"
+      - key: FIELD_STATE_BACKEND
+        value: memory
+      - key: FIELD_EVIDENCE_BACKEND
+        value: local

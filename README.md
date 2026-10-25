@@ -100,7 +100,17 @@ cd backend
 python test_e2e_cycle.py
 ```
 
-### 5. Deploy to Google Cloud Run (Terraform or Script)
+### 5. Deploy to Render (1-Click Live Web Service)
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Stewartsson/Plant-debugger-pro)
+
+You can deploy Plant Debugger Pro to [Render](https://render.com) with 1 click:
+1. Click the **Deploy to Render** button above or connect `https://github.com/Stewartsson/Plant-debugger-pro.git` in your Render Dashboard.
+2. Render reads `render.yaml` and `Dockerfile` automatically.
+3. (Optional) Provide your `GEMINI_API_KEY` in environment variables. If omitted, the platform runs seamlessly using resilient local verification mocks!
+4. Your live URL will be active at `https://plant-debugger-pro-xxxx.onrender.com`.
+
+### 6. Deploy to Google Cloud Run (Terraform or Script)
 ```bash
 # Via One-Click Script
 ./deploy-gcp.sh
