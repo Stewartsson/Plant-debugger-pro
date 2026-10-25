@@ -38,7 +38,7 @@ jobs:
           npm ci
           npm run build
 
-      - name: Run 11-Stage End-to-End Autonomous Diagnostic Test
+      - name: Run 13-Stage End-to-End Autonomous Diagnostic Test
         run: |
           cd backend
           python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 &
