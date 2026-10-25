@@ -19,6 +19,7 @@ interface HeaderProps {
   wsConnected: boolean;
   onOpenKnowledge: () => void;
   onOpenRCA: () => void;
+  onOpenAudit: () => void;
   onResetPlant: () => void;
 }
 
@@ -30,6 +31,7 @@ export const Header: React.FC<HeaderProps> = ({
   wsConnected,
   onOpenKnowledge,
   onOpenRCA,
+  onOpenAudit,
   onResetPlant,
 }) => {
   return (
@@ -130,6 +132,15 @@ export const Header: React.FC<HeaderProps> = ({
           >
             <FileText className="h-3.5 w-3.5 text-emerald-400" />
             <span className="hidden md:inline">RCA / CMMS</span>
+          </button>
+
+          <button
+            onClick={onOpenAudit}
+            title="Unified Cryptographic Audit Trail"
+            className="flex items-center gap-1 bg-industrial-700 hover:bg-industrial-600 text-slate-200 px-2.5 py-1.5 rounded-lg border border-industrial-600 text-xs font-medium transition"
+          >
+            <ShieldCheck className="h-3.5 w-3.5 text-purple-400" />
+            <span className="hidden md:inline">Audit Trail</span>
           </button>
 
           <button

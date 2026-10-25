@@ -12,6 +12,8 @@ from app.agent.planner import gemini_planner
 from app.agent.action_guard import action_guard
 from app.agent.vision import gemini_vision
 from app.agent.acoustic import gemini_acoustic
+from app.verification.audit_trail import audit_trail
+from app.storage.backends import state_backend
 
 class ADKWorkflowState:
     IDLE = "IDLE"
@@ -210,5 +212,21 @@ class ADKDynamicWorkflowHost:
             **kwargs
         }
         self.decision_trace.append(entry)
+        
+        # Persist to Cryptographic Audit Trail
+        audit_trail.record_event(
+            event_type=f"ADK_{phase}",
+            details=f"[{title}] {details}",
+            payload={"step": step, "status": status, **kwargs},
+            asset_tag=kwargs.get("task", {}).get("target_asset") if isinstance(kwargs.get("task"), dict) else None
+        )
+
+        # Persist checkpoint to state backend (Firestore / Local)
+        if self.current_incident_id:
+            state_backend.save_adk_checkpoint(
+                session_id=self.current_incident_id,
+                step=step,
+                checkpoint_data=entry
+            )
 
 adk_host = ADKDynamicWorkflowHost()

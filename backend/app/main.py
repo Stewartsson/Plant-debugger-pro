@@ -10,6 +10,8 @@ from app.api.routes_sim import router as sim_router
 from app.api.routes_telemetry import router as telemetry_router, ws_manager
 from app.api.routes_agent import router as agent_router
 from app.api.routes_knowledge import router as knowledge_router
+from app.api.routes_pubsub import router as pubsub_router
+from app.api.routes_audit import router as audit_router
 
 # Background 1 Hz simulation tick task
 async def simulation_background_loop():
@@ -58,6 +60,8 @@ app.include_router(sim_router, prefix=settings.API_PREFIX)
 app.include_router(telemetry_router, prefix=settings.API_PREFIX)
 app.include_router(agent_router, prefix=settings.API_PREFIX)
 app.include_router(knowledge_router, prefix=settings.API_PREFIX)
+app.include_router(pubsub_router, prefix=settings.API_PREFIX)
+app.include_router(audit_router, prefix=settings.API_PREFIX)
 
 # Static files for evidence and samples
 app.mount("/evidence", StaticFiles(directory=str(settings.EVIDENCE_PATH)), name="evidence")

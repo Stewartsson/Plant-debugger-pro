@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  plant-debugger:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: plant-debugger-core
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - DECISION_ENGINE=adk
+      - ADK_FALLBACK_POLICY=false
+      - ADK_SESSION_BACKEND=local
+      - VISION_ENGINE=gemini
+      - VISION_FALLBACK_POLICY=false
+      - FIELD_STATE_BACKEND=local
+      - FIELD_EVIDENCE_BACKEND=local
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+    networks:
+      - plant-net
+
+  plant-sim:
+    build:
+      context: ./services/plant-sim
+      dockerfile: Dockerfile
+    container_name: plant-sim-engine
+    ports:
+      - "8001:8001"
+    environment:
+      - PORT=8001
+      - PLANT_DEBUGGER_URL=http://plant-debugger:8000
+      - PUBSUB_TOPIC=plant-anomaly-events
+    depends_on:
+      - plant-debugger
+    networks:
+      - plant-net
+
+networks:
+  plant-net:
+    driver: bridge

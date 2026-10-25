@@ -8,6 +8,7 @@ import { FaultInjector } from './components/commander/FaultInjector';
 import { MobileOperatorCompanion } from './components/operator/MobileOperatorCompanion';
 import { KnowledgeModal } from './components/common/KnowledgeModal';
 import { RCAModal } from './components/common/RCAModal';
+import { AuditTrailModal } from './components/common/AuditTrailModal';
 
 export const App: React.FC = () => {
   const [role, setRole] = useState<'commander' | 'operator'>('commander');
@@ -20,6 +21,7 @@ export const App: React.FC = () => {
   // Modals
   const [isKnowledgeOpen, setIsKnowledgeOpen] = useState(false);
   const [isRCAOpen, setIsRCAOpen] = useState(false);
+  const [isAuditOpen, setIsAuditOpen] = useState(false);
 
   // Poll or WebSocket for Telemetry
   useEffect(() => {
@@ -170,6 +172,7 @@ export const App: React.FC = () => {
         wsConnected={wsConnected}
         onOpenKnowledge={() => setIsKnowledgeOpen(true)}
         onOpenRCA={() => setIsRCAOpen(true)}
+        onOpenAudit={() => setIsAuditOpen(true)}
         onResetPlant={handleResetPlant}
       />
 
@@ -240,6 +243,7 @@ export const App: React.FC = () => {
       {/* Modals */}
       <KnowledgeModal isOpen={isKnowledgeOpen} onClose={() => setIsKnowledgeOpen(false)} />
       <RCAModal isOpen={isRCAOpen} onClose={() => setIsRCAOpen(false)} />
+      <AuditTrailModal isOpen={isAuditOpen} onClose={() => setIsAuditOpen(false)} />
     </div>
   );
 };

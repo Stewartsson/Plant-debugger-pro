@@ -152,8 +152,29 @@ def run_e2e_test():
     print(f"    Maintenance Action: {r_rca['work_order']['maintenance_action']}")
     print(f"    5-Whys Count: {len(r_rca['five_whys'])} items")
 
+    # 12. Cryptographic Audit Trail Verification
+    print("\n[12] Validating Cryptographic Tamper-Proof Audit Trail Ledger...")
+    r_audit = requests.get(f"{BASE_URL}/api/audit").json()
+    print(f"    Total Blocks Recorded: {r_audit['total_records']}")
+    print(f"    Cryptographic Integrity: {r_audit['integrity']}")
+    assert r_audit['integrity']['valid'] is True, "Audit Trail chain tampering detected!"
+    print("    ✓ All SHA-256 block hashes verified end-to-end with zero tampering!")
+
+    # 13. Google Cloud Pub/Sub Webhook & OIDC Delivery Verification
+    print("\n[13] Verifying Cloud Pub/Sub Push Ingestion (/api/pubsub/anomaly)...")
+    r_pubsub = requests.post(f"{BASE_URL}/api/pubsub/simulate-push", json={
+        "asset_tag": "FT-101",
+        "event_type": "LOW_FLOW_ANOMALY",
+        "flow_gpm": 34.0,
+        "clog_pct": 85.0,
+        "incident_id": "INC-P101-PUBSUB-TEST"
+    }).json()
+    print(f"    Pub/Sub Push Status: {r_pubsub['status']} | ADK State: {r_pubsub['adk_state']}")
+    assert r_pubsub['status'] == "PUBLISHED_AND_TRIGGERED", "Pub/Sub webhook delivery failed!"
+    print("    ✓ Cloud Pub/Sub push webhook verified successfully!")
+
     print("\n" + "=" * 60)
-    print("SUCCESS: ALL 11 VERIFICATION STAGES PASSED COMPREHENSIVELY!")
+    print("SUCCESS: ALL 13 VERIFICATION STAGES PASSED COMPREHENSIVELY!")
     print("=" * 60)
 
 if __name__ == "__main__":

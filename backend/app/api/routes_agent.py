@@ -3,6 +3,8 @@ from fastapi import APIRouter, UploadFile, File, Form, HTTPException
 from typing import Optional
 from app.agent.workflow import adk_host
 from app.verification.rca_generator import rca_generator
+from app.verification.audit_trail import audit_trail
+from app.storage.backends import evidence_backend
 from app.config import settings
 
 router = APIRouter(prefix="/agent", tags=["Agent Workflow"])
@@ -34,13 +36,23 @@ async def submit_evidence(
         filename = file.filename or "evidence.dat"
         sha256_hash = hashlib.sha256(evidence_bytes).hexdigest()
         
-        # Save to disk for audit
-        file_path = settings.EVIDENCE_PATH / f"{sha256_hash[:16]}_{filename}"
-        with open(file_path, "wb") as f:
-            f.write(evidence_bytes)
+        # Store evidence via configured backend (GCS or Local)
+        stored_uri = evidence_backend.store_evidence(filename, evidence_bytes, sha256_hash)
+        
+        # Log evidence integrity into Audit Trail
+        audit_trail.record_event(
+            event_type="FIELD_EVIDENCE_SEALED",
+            details=f"Field evidence sealed: {filename} (SHA-256: {sha256_hash[:16]}...). URI: {stored_uri}",
+            payload={"task_id": task_id, "sha256": sha256_hash, "uri": stored_uri, "filename": filename}
+        )
     else:
         # For pure manual slider confirmations, hash the text notes + timestamp
         sha256_hash = hashlib.sha256(f"{task_id}_{confirmed_action_pct}_{operator_notes}".encode()).hexdigest()
+        audit_trail.record_event(
+            event_type="MANUAL_ACTION_CONFIRMED",
+            details=f"Operator confirmed manual delta: {confirmed_action_pct}% on task {task_id}",
+            payload={"task_id": task_id, "confirmed_pct": confirmed_action_pct, "notes": operator_notes}
+        )
 
     result = adk_host.submit_field_evidence(
         task_id=task_id,
