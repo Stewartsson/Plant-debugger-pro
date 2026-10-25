@@ -37,4 +37,5 @@ venv/
 Thumbs.db
 
 # Storage artifacts (transient)
-backend/storage/evidence/*_evidence.dat
+backend/storage/evidence/*
+!backend/storage/evidence/.gitkeep

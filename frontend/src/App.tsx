@@ -9,6 +9,7 @@ import { MobileOperatorCompanion } from './components/operator/MobileOperatorCom
 import { KnowledgeModal } from './components/common/KnowledgeModal';
 import { RCAModal } from './components/common/RCAModal';
 import { AuditTrailModal } from './components/common/AuditTrailModal';
+import { ArrowRight, Radio, HardHat, Sparkles } from 'lucide-react';
 
 export const App: React.FC = () => {
   const [role, setRole] = useState<'commander' | 'operator'>('commander');
@@ -193,6 +194,7 @@ export const App: React.FC = () => {
                   trace={decisionTrace}
                   workflowState={workflowState}
                   activeTask={activeTask}
+                  onSwitchToOperator={() => setRole('operator')}
                 />
               </div>
 
@@ -204,24 +206,54 @@ export const App: React.FC = () => {
                   currentValvePct={telemetry?.bypass_valve.position_pct || 0}
                 />
 
-                {/* Quick Operator Task Callout if paused */}
+                {/* Highly Animated Field Operator Action Card when workflow is paused */}
                 {workflowState === 'PAUSED_AWAITING_INPUT' && activeTask && (
-                  <div className="bg-amber-950/20 border-2 border-amber-500/60 rounded-xl p-4 shadow-md">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[10px] font-mono font-bold text-amber-400 uppercase tracking-wide">
-                        Pending Field Action
-                      </span>
-                      <button
-                        onClick={() => setRole('operator')}
-                        className="text-xs font-mono font-bold text-amber-300 underline"
-                      >
-                        Switch to Operator Mode &rarr;
-                      </button>
+                  <div className="bg-amber-950/30 border-2 border-amber-500 rounded-xl p-4 shadow-[0_0_25px_rgba(245,158,11,0.3)] relative overflow-hidden neon-pulse-amber">
+                    {/* Laser sweep animation */}
+                    <div className="laser-scan-line"></div>
+                    {/* Diagonal hazard stripes */}
+                    <div className="absolute inset-0 hazard-stripes opacity-15 pointer-events-none"></div>
+
+                    <div className="relative z-10">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <span className="relative flex h-3 w-3">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
+                          </span>
+                          <span className="text-[10px] font-mono font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
+                            <Radio className="h-3 w-3 text-amber-400 animate-pulse" />
+                            Pending Physical Field Action
+                          </span>
+                        </div>
+
+                        <button
+                          onClick={() => setRole('operator')}
+                          className="group inline-flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-mono font-extrabold px-3 py-1 rounded-md transition-all shadow-md hover:shadow-amber-500/50 active:scale-95"
+                        >
+                          <HardHat className="h-3.5 w-3.5 text-slate-900" />
+                          <span>Switch to Operator</span>
+                          <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
+                        </button>
+                      </div>
+
+                      <div className="mt-2 bg-industrial-950/90 border border-amber-500/40 rounded-lg p-3">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-xs font-bold text-slate-100 flex items-center gap-1.5 font-mono">
+                            <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px]">
+                              {activeTask.target_asset}
+                            </span>
+                            {activeTask.title}
+                          </h4>
+                          <span className="text-[10px] font-mono text-amber-400 font-bold bg-amber-950/60 px-2 py-0.5 rounded border border-amber-800">
+                            {activeTask.evidence_type} REQUIRED
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-300 font-mono mt-1.5 leading-relaxed bg-black/40 p-2 rounded border border-industrial-800">
+                          {activeTask.instruction}
+                        </p>
+                      </div>
                     </div>
-                    <h4 className="text-xs font-bold text-slate-100">{activeTask.title}</h4>
-                    <p className="text-[11px] text-slate-300 font-mono mt-1">
-                      {activeTask.instruction}
-                    </p>
                   </div>
                 )}
               </div>

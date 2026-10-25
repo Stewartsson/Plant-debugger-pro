@@ -118,6 +118,9 @@ export const PIDCanvas: React.FC<PIDCanvasProps> = ({ telemetry, onSelectAsset }
             {/* Local Differential Pressure Indicator Dial (NO REMOTE API) */}
             <g transform="translate(45, -15)">
               <line x1="0" y1="25" x2="0" y2="5" stroke="#94a3b8" strokeWidth="2" />
+              {strainer.differential_pressure_psi > 6.0 && (
+                <circle cx="0" cy="-5" r="24" fill="none" stroke="#ef4444" strokeWidth="1.5" className="animate-ping" opacity="0.6" />
+              )}
               <circle cx="0" cy="-5" r="18" fill="#0f172a" stroke={strainer.differential_pressure_psi > 6.0 ? '#ef4444' : '#22c55e'} strokeWidth="2" />
               {/* Dial needle */}
               <line 
@@ -172,19 +175,24 @@ export const PIDCanvas: React.FC<PIDCanvasProps> = ({ telemetry, onSelectAsset }
             className="cursor-pointer group"
             onClick={() => onSelectAsset && onSelectAsset('P-101')}
           >
+            {/* Cavitation vibrating aura */}
+            {pump.is_cavitating && (
+              <circle cx="40" cy="40" r="48" fill="none" stroke="#ef4444" strokeWidth="1.5" strokeDasharray="4 4" className="animate-spin" opacity="0.75" />
+            )}
+
             {/* Pump volute casing */}
-            <circle cx="40" cy="40" r="40" fill="#1e293b" stroke={pump.is_cavitating ? '#ef4444' : '#38bdf8'} strokeWidth="3" />
+            <circle cx="40" cy="40" r="40" fill="#1e293b" stroke={pump.is_cavitating ? '#ef4444' : '#38bdf8'} strokeWidth="3" className={pump.is_cavitating ? 'animate-pulse' : ''} />
             {/* Discharge nozzle */}
             <polygon points="65,10 80,10 80,40 65,40" fill="#1e293b" stroke={pump.is_cavitating ? '#ef4444' : '#38bdf8'} strokeWidth="2" />
             
             {/* Rotating Impeller blades */}
             <g transform="translate(40, 40)">
               <circle cx="0" cy="0" r="8" fill="#64748b" />
-              <g className="animate-spin" style={{ transformOrigin: '0px 0px', animationDuration: '2s' }}>
-                <path d="M 0 0 Q 15 -10 25 0" stroke="#38bdf8" strokeWidth="2.5" fill="none" />
-                <path d="M 0 0 Q -15 10 -25 0" stroke="#38bdf8" strokeWidth="2.5" fill="none" />
-                <path d="M 0 0 Q 10 15 0 25" stroke="#38bdf8" strokeWidth="2.5" fill="none" />
-                <path d="M 0 0 Q -10 -15 0 -25" stroke="#38bdf8" strokeWidth="2.5" fill="none" />
+              <g className="animate-spin" style={{ transformOrigin: '0px 0px', animationDuration: pump.is_cavitating ? '0.7s' : (isRecovered ? '1.2s' : '2.0s') }}>
+                <path d="M 0 0 Q 15 -10 25 0" stroke={pump.is_cavitating ? '#f87171' : '#38bdf8'} strokeWidth="2.5" fill="none" />
+                <path d="M 0 0 Q -15 10 -25 0" stroke={pump.is_cavitating ? '#f87171' : '#38bdf8'} strokeWidth="2.5" fill="none" />
+                <path d="M 0 0 Q 10 15 0 25" stroke={pump.is_cavitating ? '#f87171' : '#38bdf8'} strokeWidth="2.5" fill="none" />
+                <path d="M 0 0 Q -10 -15 0 -25" stroke={pump.is_cavitating ? '#f87171' : '#38bdf8'} strokeWidth="2.5" fill="none" />
               </g>
             </g>
 
@@ -215,6 +223,9 @@ export const PIDCanvas: React.FC<PIDCanvasProps> = ({ telemetry, onSelectAsset }
             <rect x="0" y="30" width="16" height="20" fill="#334155" stroke="#64748b" strokeWidth="1" />
             <line x1="8" y1="30" x2="8" y2="0" stroke="#64748b" strokeWidth="2" />
             
+            {isRestricted && (
+              <circle cx="8" cy="-16" r="26" fill="none" stroke="#f43f5e" strokeWidth="1.5" className="animate-ping" opacity="0.6" />
+            )}
             <circle cx="8" cy="-16" r="20" fill="#0f172a" stroke={isRestricted ? '#f43f5e' : '#10b981'} strokeWidth="2" />
             <text x="8" y="-20" fill="#94a3b8" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="monospace">FT-101</text>
             <text x="8" y="-7" fill={isRestricted ? '#f43f5e' : '#34d399'} fontSize="11" fontWeight="bold" textAnchor="middle" fontFamily="monospace">

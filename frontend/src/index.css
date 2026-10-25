@@ -14,10 +14,14 @@
   }
 }
 
-/* Custom fluid animation */
+/* =========================================================
+   AWESOME CUSTOM INDUSTRIAL SCADA ANIMATIONS
+   ========================================================= */
+
+/* 1. Fluid particle flow animations */
 @keyframes fluid-flow {
   0% {
-    stroke-dashoffset: 40;
+    stroke-dashoffset: 48;
   }
   100% {
     stroke-dashoffset: 0;
@@ -26,17 +30,161 @@
 
 .animate-fluid {
   stroke-dasharray: 8 6;
-  animation: fluid-flow 1.2s linear infinite;
+  animation: fluid-flow 1.0s linear infinite;
+  filter: drop-shadow(0 0 3px rgba(56, 189, 248, 0.7));
 }
 
 .animate-fluid-fast {
   stroke-dasharray: 8 6;
-  animation: fluid-flow 0.6s linear infinite;
+  animation: fluid-flow 0.5s linear infinite;
+  filter: drop-shadow(0 0 5px rgba(52, 211, 153, 0.9));
 }
 
 .animate-fluid-restricted {
-  stroke-dasharray: 4 10;
-  animation: fluid-flow 2.8s linear infinite;
+  stroke-dasharray: 5 12;
+  animation: fluid-flow 2.4s linear infinite;
+  filter: drop-shadow(0 0 4px rgba(244, 63, 94, 0.8));
+}
+
+/* 2. Moving Industrial Hazard Caution Stripes */
+@keyframes hazard-move {
+  0% { background-position: 0 0; }
+  100% { background-position: 48px 0; }
+}
+
+.hazard-stripes {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(245, 158, 11, 0.12),
+    rgba(245, 158, 11, 0.12) 12px,
+    transparent 12px,
+    transparent 24px
+  );
+  background-size: 48px 48px;
+  animation: hazard-move 2.5s linear infinite;
+}
+
+.hazard-stripes-danger {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(239, 68, 68, 0.18),
+    rgba(239, 68, 68, 0.18) 12px,
+    transparent 12px,
+    transparent 24px
+  );
+  background-size: 48px 48px;
+  animation: hazard-move 1.8s linear infinite;
+}
+
+/* 3. Glowing Neon Pulse */
+@keyframes neon-amber-pulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.25), inset 0 0 12px rgba(245, 158, 11, 0.08);
+    border-color: rgba(245, 158, 11, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(245, 158, 11, 0.55), inset 0 0 20px rgba(245, 158, 11, 0.18);
+    border-color: rgba(245, 158, 11, 0.9);
+  }
+}
+
+.neon-pulse-amber {
+  animation: neon-amber-pulse 2s ease-in-out infinite;
+}
+
+@keyframes neon-rose-pulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(244, 63, 94, 0.25), inset 0 0 12px rgba(244, 63, 94, 0.08);
+    border-color: rgba(244, 63, 94, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(244, 63, 94, 0.6), inset 0 0 22px rgba(244, 63, 94, 0.2);
+    border-color: rgba(244, 63, 94, 0.95);
+  }
+}
+
+.neon-pulse-rose {
+  animation: neon-rose-pulse 1.8s ease-in-out infinite;
+}
+
+/* 4. Scanner Laser Sweep across active tasks */
+@keyframes laser-sweep {
+  0% {
+    top: 0%;
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.7;
+  }
+  80% {
+    opacity: 0.7;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+.laser-scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #f59e0b, transparent);
+  box-shadow: 0 0 10px #f59e0b, 0 0 20px #f59e0b;
+  animation: laser-sweep 2.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* 5. Expanding Concentric Radar Rings */
+@keyframes radar-ripple {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+
+.radar-ring {
+  animation: radar-ripple 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+.radar-ring-delayed {
+  animation: radar-ripple 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+  animation-delay: 1.0s;
+}
+
+/* 6. Dynamic Equalizer Bar Animations */
+@keyframes eq-bounce-1 { 0%, 100% { height: 25%; } 50% { height: 95%; } }
+@keyframes eq-bounce-2 { 0%, 100% { height: 80%; } 50% { height: 35%; } }
+@keyframes eq-bounce-3 { 0%, 100% { height: 45%; } 50% { height: 100%; } }
+@keyframes eq-bounce-4 { 0%, 100% { height: 90%; } 50% { height: 20%; } }
+@keyframes eq-bounce-5 { 0%, 100% { height: 60%; } 50% { height: 85%; } }
+
+.eq-bar-1 { animation: eq-bounce-1 0.7s ease-in-out infinite; }
+.eq-bar-2 { animation: eq-bounce-2 0.5s ease-in-out infinite; }
+.eq-bar-3 { animation: eq-bounce-3 0.9s ease-in-out infinite; }
+.eq-bar-4 { animation: eq-bounce-4 0.6s ease-in-out infinite; }
+.eq-bar-5 { animation: eq-bounce-5 0.8s ease-in-out infinite; }
+
+/* 7. Holographic Shimmer */
+@keyframes shimmer-pass {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(250%); }
+}
+
+.shimmer-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+  animation: shimmer-pass 3.2s infinite;
+  pointer-events: none;
 }
 
 /* Custom scrollbars */
